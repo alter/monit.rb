@@ -90,6 +90,7 @@ def send_email
 end
 
 check_services
-make_body
 check_space
+check_load
+make_body
 send_email
