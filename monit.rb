@@ -59,6 +59,15 @@ def check_space
   end
 end
 
+def check_load
+  load = %x[uptime|awk '{print $NF}'].to_f
+  ap load
+  if load > %x[grep processor /proc/cpuinfo |wc -l].to_f
+      msg = "System load for 15 minutes too high #{load.to_s}"
+      @body.nil? ? @body = msg : @body += "\n#{msg}"
+  end
+end
+
 def make_body
   @services.each do |name, hash|
     if hash[:state] < 2
@@ -68,7 +77,8 @@ def make_body
 
   @df_hash.each do |dev,used|
     if used.to_i > 90
-      @body.nil? ? @body = "#{dev} has only #{100 - used.to_i}% free" : @body += "\n#{dev} has only #{100 - used.to_i}% free"
+      msg = "#{dev} has only #{100 - used.to_i}% free"
+      @body.nil? ? @body = msg : @body += "\n#{msg}"
     end
   end
 end
