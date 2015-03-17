@@ -61,7 +61,6 @@ end
 
 def check_load
   load = %x[uptime|awk '{print $NF}'].chop.gsub(',', '.').to_f
-  ap load
   if load > %x[grep processor /proc/cpuinfo |wc -l].to_f
       msg = "System load for 15 minutes too high #{load.to_s}"
       @body.nil? ? @body = msg : @body += "\n#{msg}"
